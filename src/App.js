@@ -39,6 +39,8 @@ export default class App extends Component {
     let data = await fetch(url);
     let result = await data.json();
 
+    console.log(url)
+
     console.log(result)
     this.setState({
       locationName: result.name,
