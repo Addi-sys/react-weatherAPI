@@ -2,8 +2,18 @@ import React, { Component } from 'react';
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, Button, NavDropdown } from 'react-bootstrap';
+import Weatherbox from './components/WeatherBox.js'
 
 const apikey = process.env.REACT_APP_APIKEY;
+
+export const changeCity = async (city) => {
+  let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=metric`;
+  let data = await fetch(url);
+  let cityResult = await data.json();
+
+  console.log(cityResult)
+  console.log(city)
+}
 
 export default class App extends Component {
   constructor(props) {
@@ -11,6 +21,10 @@ export default class App extends Component {
     this.state = {
       weather: null
     }
+    this.state = {
+      isLoading: true
+    };
+
   }
 
   componentDidMount() {
@@ -24,8 +38,20 @@ export default class App extends Component {
     let url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}&units=metric`
     let data = await fetch(url);
     let result = await data.json();
-    console.log(result);
-    this.setState({ locationName: data.name });
+
+    console.log(result)
+    this.setState({
+      locationName: result.name,
+      temp: result.main.temp,
+      description: result.weather[0].description,
+      isLoading: false
+    });
+
+    console.log(result.weather[0].description)
+    console.log(result.name)
+    console.log(result.main.temp)
+    console.log(this.state)
+
   }
 
   showLocation = (position) => {
@@ -44,11 +70,7 @@ export default class App extends Component {
 
   geoLocation = () => {
     navigator.geolocation.getCurrentPosition((post) => {
-      console.log(post.coords.longitude)
-      console.log(post.coords.latitude)
-
       this.callWeather(post.coords.latitude, post.coords.longitude)
-  
     })
 
   }
@@ -57,7 +79,7 @@ export default class App extends Component {
 
   render() {
 
-    if (this.state.weather === null) {
+    if (this.state.isLoading === true) {
       return (
         <h1>Loading...</h1>
       )
@@ -67,15 +89,15 @@ export default class App extends Component {
       <div className='body'>
         <Navbar bg="dark" variant="dark">
           <NavDropdown title="Countries" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Ho Chi Minh City</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">Cape Town</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Toronto</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Mexico City</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Amsterdam</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Vladivostok</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Seoul</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">New York</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Beunos Aires</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Ho Chi Minh City')} href="#action/3.1">Ho Chi Minh City</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Cape Town')} href="#action/3.2">Cape Town</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Toronto')} href="#action/3.3">Toronto</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Mexico City')} href="#action/3.3">Mexico City</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Amsterdam')} href="#action/3.3">Amsterdam</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Vladivostok')} href="#action/3.3">Vladivostok</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Seoul')} href="#action/3.3">Seoul</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('New York')} href="#action/3.3">New York</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => changeCity('Lima')} href="#action/3.3">Lima</NavDropdown.Item>
           </NavDropdown>
           <Navbar.Brand href="#home">WEATHER</Navbar.Brand>
           <Nav className="mr-auto">
@@ -92,16 +114,17 @@ export default class App extends Component {
               <h1 className="col-12 display-4 my-2 py-3 text-success">
                 Awesome Weather App
             </h1>
-              <h2 className="col-12">{this.state.weather.name}</h2>
-              <h3 className="col-12 text-danger">{this.state.weather.main.temp}</h3>
-              <h3 className="col-12">{this.state.weather.weather[0].description}</h3>
-
+              <Weatherbox city={this.state.locationName} temp={this.state.temp} description={this.state.description}></Weatherbox>
             </div>
           </div>
         </div >
-      </div >
+      </div > 
     )
   }
 }
 
 
+// icon: data.weather[0].icon 
+
+
+// 
