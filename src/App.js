@@ -6,14 +6,14 @@ import Weatherbox from './components/WeatherBox.js'
 
 const apikey = process.env.REACT_APP_APIKEY;
 
-export const changeCity = async (city) => {
-  let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=metric`;
-  let data = await fetch(url);
-  let cityResult = await data.json();
+// export const changeCity = async (city) => {
+//   let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&units=metric`;
+//   let data = await fetch(url);
+//   let cityResult = await data.json();
 
-  console.log(cityResult)
-  console.log(city)
-}
+//   console.log(cityResult)
+//   console.log(city)
+// }
 
 export default class App extends Component {
   constructor(props) {
